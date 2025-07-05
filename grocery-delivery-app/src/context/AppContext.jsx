@@ -18,7 +18,7 @@ export const AppContextProvider = ({children}) => {
     const [cartItems, setCartItems] = useState({})
     
     //Add Products to Cart
-    const addToCart = ()=>{
+    const addToCart = (itemId)=>{
         let cartData = structuredClone(cartItems);
 
         if(cartData[itemId]){
