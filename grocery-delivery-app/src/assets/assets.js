@@ -1,6 +1,7 @@
-import logo from "./logo.svg";
-import logo5 from "./logo5.svg";
-import logo6 from "./logo6.svg";
+import logo10 from "./logo10.png";
+import m_1 from "./m_1.png";
+import m_2 from "./m_2.png";
+import m_small from "./m_small.png";
 import search_icon from "./search_icon.svg";
 import remove_icon from "./remove_icon.svg";
 import arrow_right_icon_colored from "./arrow_right_icon_colored.svg";
@@ -73,9 +74,10 @@ import brown_rice_image from "./brown_rice_image.png";
 import barley_image from "./barley_image.png";
 
 export const assets = {
-  logo,
-  logo5,
-  logo6,
+  logo10,
+  m_1,
+  m_2,
+  m_small,
   search_icon,
   remove_icon,
   arrow_right_icon_colored,
