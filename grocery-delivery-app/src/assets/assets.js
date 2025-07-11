@@ -1,7 +1,6 @@
 import logo10 from "./logo10.png";
 import m_1 from "./m_1.png";
 import m_2 from "./m_2.png";
-import m_small from "./m_small.png";
 import search_icon from "./search_icon.svg";
 import remove_icon from "./remove_icon.svg";
 import arrow_right_icon_colored from "./arrow_right_icon_colored.svg";
@@ -77,7 +76,6 @@ export const assets = {
   logo10,
   m_1,
   m_2,
-  m_small,
   search_icon,
   remove_icon,
   arrow_right_icon_colored,
