@@ -73,6 +73,11 @@ export const AppContextProvider = ({children}) => {
         }
         return Math.floor(totalAmount * 100) / 100;
     }
+
+    const clearCart = () => {
+        setCartItems({});
+    };
+
     //Fetch All Products 
     const fetchProducts = async()=>{
         setProducts(dummyProducts)
@@ -82,7 +87,8 @@ export const AppContextProvider = ({children}) => {
         fetchProducts()
     },[])
     const value = {navigate, user, setUser, isSeller, setisSeller, showUserLogin,setshowUserLogin, products, currency,
-        addToCart, updateCartItem, removeFromCart, cartItems, searchQuery, setSearchQuery, getCartAmount, getCartCount
+        addToCart, updateCartItem, removeFromCart, cartItems, searchQuery, setSearchQuery, getCartAmount, getCartCount,
+        clearCart
     }
     return <AppContext.Provider value={value}>
         {children}

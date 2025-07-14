@@ -2,10 +2,10 @@ import { useState } from "react";
 import { useAppContext } from "../context/AppContext";
 import { assets, dummyAddress } from "../assets/assets";
 import { useEffect } from "react";
-
+import toast from "react-hot-toast";
 const Cart = () => {
 
-    const {navigate,products,currency, getCartAmount, getCartCount, cartItems, removeFromCart, updateCartItem} = useAppContext();
+    const {navigate,products,currency, getCartAmount, getCartCount, cartItems, removeFromCart, updateCartItem,clearCart} = useAppContext();
 
     const [cartArray, setCartArray] = useState([])
     const [addresses, setAddresses] = useState(dummyAddress)
@@ -22,6 +22,8 @@ const Cart = () => {
         }
         setCartArray(tempArray)
     }
+
+    
 
     const placeOrder = async ()=>{
 
@@ -134,7 +136,16 @@ const Cart = () => {
                         </p>
                     </div>
 
-                    <button className="w-full py-3 mt-6 cursor-pointer bg-primary text-white font-medium hover:bg-primary-dull transition">
+                    <button 
+                     onClick={() => {
+                        if (paymentOption !== "COD") {
+                        toast.success("Payment Done");
+                        }
+                        clearCart()
+                        navigate('/my-orders')
+                     }}
+                    
+                    className="w-full py-3 mt-6 cursor-pointer bg-primary text-white font-medium hover:bg-primary-dull transition">
                         {paymentOption === "COD" ? "Place Order" : "Proceed to Checkout"}
                     </button>
                 </div>
