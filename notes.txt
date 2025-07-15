@@ -1,0 +1,1192 @@
+1. Main.jsx
+
+
+import { createRoot } from 'react-dom/client'
+import './index.css'
+import App from './App.jsx'
+import { AppContextProvider } from './context/AppContext.jsx'
+import { BrowserRouter } from 'react-router-dom'
+createRoot(document.getElementById('root')).render(
+  <BrowserRouter>
+   <AppContextProvider>
+     <App />
+   </AppContextProvider>
+  </BrowserRouter>,
+)
+
+
+
+2. index.css
+
+@import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Outfit:wght@100..900&display=swap');
+
+@import "tailwindcss";
+
+*{ 
+      font-family: "Outfit", sans-serif;
+}
+
+@theme{
+    --color-primary: #4fbf8b;
+    --color-primary-dull: #44ae7c;
+}
+
+
+
+3. App.jsx
+
+
+import React from 'react'
+import Navbar from './components/Navbar'
+import Home from './pages/Home'
+import { Routes, Route, useLocation } from 'react-router-dom';
+import { Toaster } from 'react-hot-toast';
+import Footer from './components/Footer';
+import { useAppContext } from './context/AppContext';
+import Login from './components/Login';
+import AllProducts from './pages/AllProducts';
+import ProductCategory from './pages/ProductCategory';
+import ProductDetails from './pages/ProductDetails';
+import Cart from './pages/Cart';
+import AddAddress from './pages/AddAddress';
+import MyOrders from './pages/MyOrders';
+
+
+const App = () => {
+
+  const isSellerPath = useLocation().pathname.includes("seller");
+  const {showUserLogin} = useAppContext();
+
+  return (
+    <div>
+       {isSellerPath ? null : <Navbar/> }
+       {showUserLogin ? <Login/> : null}
+       <Toaster/>
+       <div className={`${isSellerPath ? "" : "px-6 md:px-16 lg:px-24 xl:px-32"}`}>
+        <Routes>
+          <Route path='/' element={<Home/>}/>
+          <Route path='/products' element={<AllProducts/>}/>
+          <Route path='/products/:category' element={<ProductCategory/>}/>
+          <Route path='/products/:category/:id' element={<ProductDetails/>}/>
+          <Route path='/cart' element={<Cart/>}/>
+          <Route path='/add-address' element={<AddAddress/>}/>
+          <Route path='/my-orders' element={<MyOrders/>}/>
+        </Routes>
+       </div>
+       { !isSellerPath && <Footer/>}
+    </div>
+  )
+}
+
+export default App
+
+
+
+4.Home.jsx
+
+
+import React from 'react'
+import MainBanner from '../components/MainBanner'
+import Catagories from '../components/Categories'
+import BestSeller from '../components/BestSeller'
+import BottomBanner from '../components/BottomBanner'
+import NewsLetter from '../components/NewsLetter'
+
+const Home = () => {
+  return (
+    <div className='mt-10'>
+       <MainBanner/>
+       <Catagories/>
+       <BestSeller/>
+       <BottomBanner/>
+       <NewsLetter/>
+    </div>
+  )
+}
+
+export default Home
+
+
+
+5. MainBanner
+
+
+import React from 'react'
+import { assets } from '../assets/assets'
+import { Link } from 'react-router-dom'
+
+const MainBanner = () => {
+  return (
+    <div className='relative'>
+       <img src={assets.m_1} alt="banner" className='w-full hidden md:block h-150' />
+       <img src={assets.m_2} alt="banner" className='w-full md:hidden' />
+       <div className='absolute inset-0 flex flex-col items-center md:items-start justify-end
+           md:justify-end pb-24 md:pb-0 px-4 md:pl-18 lg:pl-24'>
+            <h1 className='text-3xl md:text-4xl lg:text-5xl font-bold text-center md:text-left max-w-72 md:max-w-80 lg:max-w-105 leading-tight lg:leading-15'>
+                Freshness You Can Trust, Savings You will Love! 
+            </h1>
+        
+
+            <div className='flex items-center mt-6 mb-2 font-medium'>
+                <Link to={"/products"} className='group flex items-center gap-2 px-7 md:px-9 py-3 bg-primary hover:bg-primary-dull transition rounded text-white cursor-pointer'>
+                Shop now
+                <img className='md:hidden transition group-focus:translate-x-1' src={assets.white_arrow_icon} alt="arrow" />
+                </Link>
+
+                <Link to={"/products"} className='group hidden md:flex items-center gap-2 px-9 py-3 cursor-pointer'>
+                Explore deals
+                <img className='transition group-hover:translate-x-1' src={assets.black_arrow_icon} alt="arrow" />
+                </Link>
+            </div>
+        </div>
+    </div>
+  )
+}
+
+export default MainBanner
+
+
+
+6. Catagories
+
+import React from 'react'
+import { categories } from '../assets/assets'
+import { useAppContext } from '../context/AppContext'
+
+const Categories = () => {
+
+  const {navigate} = useAppContext()
+  return (
+    <div className='mt-10'>
+      <p className='text-2xl md:text-3xl font-medium'>Categories</p>
+      <div className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-6
+      xl:grid-cols-7 mt-6 gap-6'>
+
+       {categories.map((category, index)=>(
+           <div key={index} 
+           className='group cursor-pointer py-5 px-3 gap-2 rounded-lg flex flex-col justify-center items-center' 
+           style={{backgroundColor: category.bgColor}}
+           onClick={()=>{
+                navigate(`/products/${category.path.toLowerCase()}`);
+                scrollTo(0,0);
+           }}>
+              <img src={category.image} alt={category.text} className='group-hover:scale-108 transition
+              max-w-28'/>
+              <p className='text-sm font-medium'>{category.text}</p>
+           </div>
+
+       ))}
+
+        
+
+      </div>
+    </div>
+  )
+}
+
+export default Categories
+
+
+
+7. BestSeller
+
+import React from 'react'
+import ProductCard from './ProductCard'
+import { useAppContext } from '../context/AppContext'
+
+const BestSeller = () => {
+    const {products} = useAppContext()
+  return (
+    <div className='mt-10'>
+       <p className='text-2xl md:text-3xl font-medium'>Best Sellers</p>
+       <div className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 md:gap-6 lg:grid-cols-5
+         mt-6'>
+           {products.filter((product)=> product.inStock).slice(0,5).map((product,index)=>(
+               <ProductCard key={index} product={product}/>
+           ))}
+           
+       </div>
+    </div>
+  )
+}
+
+export default BestSeller
+
+
+
+8. BottomBanner
+
+
+import React from 'react'
+import { assets, features } from '../assets/assets'
+
+const BottomBanner = () => {
+  return (
+    <div className='relative mt-24'>
+        <img src={assets.bottom_banner_image} alt="banner" className='w-full hidden
+        md:block'/>
+        <img src={assets.bottom_banner_image_sm} alt="banner" className='w-full md:hidden'/>
+
+        <div className='absolute inset-0 flex flex-col items-center md:items-end
+           md:justify-center pt-16 md:pt-0 md:pr-24'>
+           <div>
+              <h1 className='text-2xl md:text-3xl font-semibold text-primary mb-6'>Why We Are The Best?</h1>
+              {features.map((feature, index)=>(
+                 <div key={index} className='flex items-center gap-4 mt-2'>
+                       <img src={feature.icon} alt={feature.title} 
+                       className='md:w-11 w-9'/>
+                       <div>
+                           <h3 className='text-lg md:text-xl font-semibold'>{feature.title}</h3>
+                           <p className='text-gray-500/70 text-xs md:text-sm'>{feature.description}</p>
+                       </div>
+                 </div>
+              ))}
+           </div>
+        </div>
+    </div>
+  )
+}
+
+export default BottomBanner
+
+
+
+9. NewsLetter
+
+
+const NewsLetter = () => {
+    
+    return (
+        <div className="flex flex-col items-center justify-center text-center space-y-2 mt-24 pb-14">
+            <h1 className="md:text-4xl text-2xl font-semibold">Never Miss a Deal!</h1>
+            <p className="md:text-lg text-gray-500/70 pb-8">
+                Subscribe to get the latest offers, new arrivals, and exclusive discounts
+            </p>
+            <form className="flex items-center justify-between max-w-2xl w-full md:h-13 h-12">
+                <input
+                    className="border border-gray-300 rounded-md h-full border-r-0 outline-none w-full rounded-r-none px-3 text-gray-500"
+                    type="text"
+                    placeholder="Enter your email id"
+                    required
+                />
+                <button type="submit" className="md:px-12 px-8 h-full text-white bg-primary hover:bg-primary-dull transition-all cursor-pointer rounded-md rounded-l-none">
+                    Subscribe
+                </button>
+            </form>
+        </div>
+    )
+}
+
+export default NewsLetter
+
+
+
+10. ProductCard
+
+import React from "react";
+import { assets } from "../assets/assets";
+import { useAppContext } from "../context/AppContext";
+
+const ProductCard = ({product}) => {
+    
+    const {currency,addToCart,cartItems, updateCartItem, removeFromCart,navigate} = useAppContext()
+
+    
+
+    return product && (
+        <div onClick={()=>{navigate(`/products/${product.category.toLowerCase()}/${product._id}`);
+        scrollTo(0,0);}} className="border border-gray-500/20 rounded-md md:px-4 px-3 py-2 bg-white min-w-56 max-w-56 w-full">
+            <div className="group cursor-pointer flex items-center justify-center px-2">
+                <img className="group-hover:scale-105 transition max-w-26 md:max-w-36" src={product.image[0]} alt={product.name} />
+            </div>
+            <div className="text-gray-500/60 text-sm">
+                <p>{product.category}</p>
+                <p className="text-gray-700 font-medium text-lg truncate w-full">{product.name}</p>
+                <div className="flex items-center gap-0.5">
+                    {Array(5).fill('').map((_, i) => (
+                        
+                            <img key={i} className="md:w-3.5 w3" src={i<4 ? assets.star_icon : assets.star_dull_icon} alt=""/>
+            
+                    ))}
+                    <p>({4})</p>
+                </div>
+                <div className="flex items-end justify-between mt-3">
+                    <p className="md:text-xl text-base font-medium text-primary">
+                        {currency}{product.offerPrice}{" "} <span className="text-gray-500/60 md:text-sm text-xs line-through">{currency}{product.price}</span>
+                    </p>
+                    <div onClick={(e)=>{e.stopPropagation()}} className="text-primary">
+                        {!cartItems[product._id] ? (
+                            <button className="flex items-center justify-center gap-1 bg-primary/10 border border-primary/14 md:w-[80px] 
+                            w-[64px] h-[34px] rounded cursor-pointer" onClick={() => addToCart(product._id)} >
+                                <img src={assets.cart_icon} alt="cart_icon"/>
+                                Add
+                            </button>
+                        ) : (
+                            <div className="flex items-center justify-center gap-2 md:w-20 w-16 h-[34px] bg-primary/25 rounded select-none">
+                                <button onClick={() => {removeFromCart(product._id)}} className="cursor-pointer text-md px-2 h-full" >
+                                    -
+                                </button>
+                                <span className="w-5 text-center">{cartItems[product._id]}</span>
+                                <button onClick={() => addToCart(product._id)} className="cursor-pointer text-md px-2 h-full" >
+                                    +
+                                </button>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+export default ProductCard;
+
+
+11. AllProducts
+
+
+import React, { useEffect, useState } from 'react'
+import { useAppContext } from '../context/AppContext'
+import ProductCard from '../components/ProductCard';
+const AllProducts = () => {
+
+    const {products, searchQuery} = useAppContext();
+    const [filteredProducts, setFilteredProducts] = useState([])
+
+    useEffect(()=>{
+        if(searchQuery.length > 0){
+            setFilteredProducts(products.filter(
+                product => product.name.toLowerCase().includes(searchQuery.toLowerCase())
+            ))
+        }
+        else{
+            setFilteredProducts(products)
+        }
+    },[products, searchQuery])
+
+  return (
+    <div className='mt-16 flex flex-col'>
+        <div className='flex flex-col items-end w-max'>
+            <p className='text-2xl font-medium uppercase'>All Products</p>
+            <div className='w-16 h-0.5 bg-primary rounded-full'></div>
+        </div>
+
+        <div className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 
+         md:gap-6 lg:grid-cols-5 mt-6'>
+            {filteredProducts.filter((product)=>product.inStock).map((product,index)=>(
+                <ProductCard key={index} product={product}/>
+            ))}
+        </div>
+    </div>
+  )
+}
+
+export default AllProducts
+
+
+
+12. ProductCategory
+
+
+import React from 'react'
+import { useAppContext } from '../context/AppContext'
+import { useParams } from 'react-router-dom';
+import { categories } from '../assets/assets';
+import ProductCard from '../components/ProductCard';
+
+const ProductCategory = () => {
+
+    const {products} = useAppContext();
+    const {category} = useParams()
+
+    const searchCategory = categories.find((item)=>item.path.toLowerCase() === category)
+
+    const filteredProducts = products.filter((product)=>product.category.toLowerCase()===
+    category)
+  return (
+    <div className='mt-16'>
+       {searchCategory && (
+        <div className='flex flex-col items-end w-max'>
+            <p className='text-2xl font-medium'>{searchCategory.text}</p>
+            <div className='w-16 h-0.5 bg-primary rounded-full'></div>
+        </div>
+       )}
+       {filteredProducts.length > 0 ? (
+         <div className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 
+         md:gap-6 lg:grid-cols-5 mt-6'>
+             {filteredProducts.map((product)=>(
+                <ProductCard key={product._id} product={product}/>
+             ))}
+         </div>
+       ) :
+       (
+          <div className='flex items-center justify-center h-[60vh]'>
+             <p className='text-2xl font-medium text-primary'>No products found in this category</p>
+          </div>
+       )}
+    </div>
+  )
+}
+
+export default ProductCategory
+
+
+
+13. ProductDetails
+
+
+import { useEffect, useState } from "react";
+import { useAppContext } from "../context/AppContext";
+import { Link, useParams } from "react-router-dom";
+import { assets } from "../assets/assets";
+import ProductCard from "../components/ProductCard";
+
+const ProductDetails = () => {
+
+    const {products, navigate, currency,addToCart} = useAppContext();
+    const {id} = useParams()
+
+    const [relatedProducts, setRelatedProducts] = useState([]);
+    const [thumbnail, setThumbnail] = useState(null);
+
+    const product = products.find((item)=>item._id === id);
+         
+    useEffect(()=>{
+       if(products.length > 0){
+            let productsCopy = products.slice();
+            productsCopy = productsCopy.filter((item)=> product.category === item.category)
+            setRelatedProducts(productsCopy.slice(0,5))
+         }
+    },[products,product])
+
+    useEffect(()=>{
+        setThumbnail(product?.image[0] ? product.image[0] : null)
+    },[product])
+    return product && (
+        <div className="mt-12">
+            <p>
+                <Link to={'/'}>Home</Link> /
+                <Link to={'/products'}> Products</Link> /
+                <Link to={`/products/${product.category.toLowerCase()}`}> {product.category}</Link> /
+                <span className="text-primary"> {product.name}</span>
+            </p>
+
+            <div className="flex flex-col md:flex-row gap-16 mt-4">
+                <div className="flex gap-3">
+                    <div className="flex flex-col gap-3">
+                        {product.image.map((image, index) => (
+                            <div key={index} onClick={() => setThumbnail(image)} className="border max-w-24 border-gray-500/30 rounded overflow-hidden cursor-pointer" >
+                                <img src={image} alt={`Thumbnail ${index + 1}`} />
+                            </div>
+                        ))}
+                    </div>
+
+                    <div className="border border-gray-500/30 max-w-100 rounded overflow-hidden">
+                        <img src={thumbnail} alt="Selected product" className="w-full h-full object-cover" />
+                    </div>
+                </div>
+
+                <div className="text-sm w-full md:w-1/2">
+                    <h1 className="text-3xl font-medium">{product.name}</h1>
+
+                    <div className="flex items-center gap-0.5 mt-1">
+                        {Array(5).fill('').map((_, i) => (
+                            
+                            <img src={i<4 ? assets.star_icon : assets.star_dull_icon} className="md:w-4 w-3.5" alt=""/>
+                            
+                        ))}
+                        <p className="text-base ml-2">(4)</p>
+                    </div>
+
+                    <div className="mt-6">
+                        <p className="text-gray-500/70 line-through">MRP: {currency}{product.price}</p>
+                        <p className="text-2xl font-medium">MRP: {currency}{product.offerPrice}</p>
+                        <span className="text-gray-500/70">(inclusive of all taxes)</span>
+                    </div>
+
+                    <p className="text-base font-medium mt-6">About Product</p>
+                    <ul className="list-disc ml-4 text-gray-500/70">
+                        {product.description.map((desc, index) => (
+                            <li key={index}>{desc}</li>
+                        ))}
+                    </ul>
+
+                    <div className="flex items-center mt-10 gap-4 text-base">
+                        <button onClick={()=>addToCart(product._id)} className="w-full py-3.5 cursor-pointer font-medium bg-gray-100 text-gray-800/80 hover:bg-gray-200 transition" >
+                            Add to Cart
+                        </button>
+                        <button onClick={()=>{addToCart(product._id); navigate('/cart')}} className="w-full py-3.5 cursor-pointer font-medium bg-primary text-white hover:bg-primary-dull transition" >
+                            Buy now
+                        </button>
+                    </div>
+                </div>
+            </div>
+            {/* { related products} */}
+            <div className="flex flex-col items-center mt-20">
+                <div>
+                  <p className="text-3xl font-medium">Related Products</p>
+                  <div className="w-20 h-0.5 bg-primary rounded-full mt-2"></div>
+                </div>
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 
+                 md:gap-6 lg:grid-cols-5 mt-6 w-full">
+                    {relatedProducts.filter((product)=>product.inStock).map
+                    ((product,index)=>(
+                        <ProductCard key={index} product={product}/>
+                    ))}
+                </div>
+                <button onClick={()=>{navigate('/products'); scrollTo(0,0)}} className="mx-auto cursor-pointer px-12 my-16 py-2.5 border rounded 
+                text-primary hover:bg-primary/10 transition">See more</button>
+            </div>
+        </div>
+    );
+};
+
+export default ProductDetails;
+
+
+14. Cart
+
+
+import { useState } from "react";
+import { useAppContext } from "../context/AppContext";
+import { assets, dummyAddress } from "../assets/assets";
+import { useEffect } from "react";
+
+const Cart = () => {
+
+    const {navigate,products,currency, getCartAmount, getCartCount, cartItems, removeFromCart, updateCartItem} = useAppContext();
+
+    const [cartArray, setCartArray] = useState([])
+    const [addresses, setAddresses] = useState(dummyAddress)
+    const [showAddress, setShowAddress] = useState(false)
+    const [selectedAddress, setSelectedAddress] = useState(dummyAddress[0])
+    const [paymentOption, setPaymentOption] = useState("COD")
+
+    const getCart = () => {
+        let tempArray = []
+        for(const key in cartItems){
+            const product = products.find((item)=>item._id === key)
+            product.quantity = cartItems[key]
+            tempArray.push(product)
+        }
+        setCartArray(tempArray)
+    }
+
+    const placeOrder = async ()=>{
+
+    }
+    useEffect(()=>{
+       if(products.length > 0 && cartItems){
+        getCart()
+       }
+    },[products,cartItems])
+    return products.length > 0 && cartItems ? (
+        <div className="flex flex-col md:flex-row mt-16">
+            <div className='flex-1 max-w-4xl'>
+                <h1 className="text-3xl font-medium mb-6">
+                    Shopping Cart <span className="text-sm text-primary">{getCartCount()} Items</span>
+                </h1>
+
+                <div className="grid grid-cols-[2fr_1fr_1fr] text-gray-500 text-base font-medium pb-3">
+                    <p className="text-left">Product Details</p>
+                    <p className="text-center">Subtotal</p>
+                    <p className="text-center">Action</p>
+                </div>
+
+                {cartArray.map((product, index) => (
+                    <div key={index} className="grid grid-cols-[2fr_1fr_1fr] text-gray-500 items-center text-sm md:text-base font-medium pt-3">
+                        <div className="flex items-center md:gap-6 gap-3">
+                            <div onClick={()=>{
+                                navigate(`/products/${product.category.toLowerCase()}/${product._id}`);
+                                scrollTo(0,0);
+                            }} className="cursor-pointer w-24 h-24 flex items-center justify-center border border-gray-300 rounded overflow-hidden">
+                                <img className="max-w-full h-full object-cover" src={product.image[0]} alt={product.name} />
+                            </div>
+                            <div>
+                                <p className="hidden md:block font-semibold">{product.name}</p>
+                                <div className="font-normal text-gray-500/70">
+                                    <p>Weight: <span>{product.weight || "N/A"}</span></p>
+                                    <div className='flex items-center'>
+                                        <p>Qty:</p>
+                                        <select onChange={e => updateCartItem(product._id, Number(e.target.value))} value={cartItems[product._id]} className='outline-none'>
+                                            {Array(cartItems[product._id] > 9 ? 
+                                             cartItems[product._id] : 9).fill('').map((_, index) => (
+                                                <option key={index} value={index + 1}>{index + 1}</option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <p className="text-center">{currency}{product.offerPrice * product.quantity}</p>
+                        <button onClick={()=>removeFromCart(product._id)} className="cursor-pointer mx-auto">
+                            <img src={assets.remove_icon} alt="remove" className="inline-block w-6 h-6" />
+                        </button>
+                    </div>)
+                )}
+
+                <button onClick={()=>{navigate("/products"); scrollTo(0,0);}} className="group cursor-pointer flex items-center mt-8 gap-2 text-primary font-medium">
+                    <img className="group-hover:-translate-x-1 transition" src={assets.arrow_right_icon_colored} alt="arrow" />
+                    Continue Shopping
+                </button>
+
+            </div>
+            <div className="w-full md:max-w-[360px] md:ml-auto flex justify-center md:block max-md:mt-16">
+                <div className="max-w-[360px] w-full bg-gray-100/40 p-5 max-md:mt-16 border border-gray-300/70">
+                    <h2 className="text-xl md:text-xl font-medium">Order Summary</h2>
+                    <hr className="border-gray-300 my-5" />
+
+                    <div className="mb-6">
+                        <p className="text-sm font-medium uppercase">Delivery Address</p>
+                        <div className="relative flex justify-between items-start mt-2">
+                            <p className="text-gray-500">{selectedAddress ? `${selectedAddress.street},${selectedAddress.city},
+                            ${selectedAddress.state},${selectedAddress.country}` : "No address found"}</p>
+                            <button onClick={() => setShowAddress(!showAddress)} className="text-primary hover:underline cursor-pointer">
+                                Change
+                            </button>
+                            {showAddress && (
+                                <div className="absolute top-12 py-1 bg-white border border-gray-300 text-sm w-full">
+                                    {addresses.map((address,index)=>(
+                                <p onClick={() => {setSelectedAddress(address); setShowAddress(false)}} className="text-gray-500 p-2 hover:bg-gray-100">
+                                        {address.street},{address.city},{address.state},{address.country}
+                                    </p>
+                                    ))}
+                                    <p onClick={() => navigate('/add-address')} className="text-primary text-center cursor-pointer p-2 hover:bg-primary/10">
+                                        Add address
+                                    </p>
+                                </div>
+                            )}
+                        </div>
+
+                        <p className="text-sm font-medium uppercase mt-6">Payment Method</p>
+
+                        <select onChange={(e)=>(setPaymentOption(e.target.value))} className="w-full border border-gray-300 bg-white px-3 py-2 mt-2 outline-none">
+                            <option value="COD">Cash On Delivery</option>
+                            <option value="Online">Online Payment</option>
+                        </select>
+                    </div>
+
+                    <hr className="border-gray-300" />
+
+                    <div className="text-gray-500 mt-4 space-y-2">
+                        <p className="flex justify-between">
+                            <span>Price</span><span>{currency}{getCartAmount()}</span>
+                        </p>
+                        <p className="flex justify-between">
+                            <span>Shipping Fee</span><span className="text-green-600">Free</span>
+                        </p>
+                        <p className="flex justify-between">
+                            <span>Tax (2%)</span><span>{currency}{getCartAmount() * 2 / 100}</span>
+                        </p>
+                        <p className="flex justify-between text-lg font-medium mt-3">
+                            <span>Total Amount:</span><span>{currency}{getCartAmount() + getCartAmount() * 2 / 100}</span>
+                        </p>
+                    </div>
+
+                    <button className="w-full py-3 mt-6 cursor-pointer bg-primary text-white font-medium hover:bg-primary-dull transition">
+                        {paymentOption === "COD" ? "Place Order" : "Proceed to Checkout"}
+                    </button>
+                </div>
+            </div>
+        </div>
+    ) : null
+}
+
+export default Cart;
+
+
+15. AddAddress
+
+
+import React, { useState } from 'react'
+import { assets } from '../assets/assets'
+// Input Field Component
+const InputField = ({type, placeholder, name, handleChange, address})=>(
+    <input className='w-full px-2 py-2.5 border border-gray-500/30 rounded outline-none
+    text-gray-500 focus:border-primary transition' 
+      type={type}
+      placeholder={placeholder}
+      onChange={handleChange}
+      name={name}
+      value={address[name]}
+      required
+    />
+)
+
+const AddAddress = () => {
+
+    const [address, setAddress] = useState({
+        firstName: '',
+        lastName: '',
+        email: '',
+        street: '',
+        city: '',
+        state: '',
+        zipcode: '',
+        country: '',
+        phone: '',
+    })
+
+    const handleChange = (e)=>{
+        const {name, value} = e.target;
+        setAddress((prevAddress)=>({
+            ...prevAddress,
+            [name]:value,
+        }))
+        console.log(address)
+    }
+    const onSubmitHandler = async (e)=>{
+        e.preventDefault();
+    }
+
+  return (
+    <div className='mt-16 pb-16'>
+       <p className='text-2xl md:text-3xl text-gray-500'>Add Shipping <span 
+       className='font-semibold text-primary'>Address</span></p>
+       <div className='flex flex-col-reverse md:flex-row justify-between mt-10'>
+          <div className='flex-1 max-w-md'>
+               <form onSubmit={onSubmitHandler} className='space-y-3 mt-6 text-sm'>
+                <div className='grid grid-cols-2 gap-4'>
+                    <InputField handleChange={handleChange} address={address} 
+                    name='firstName' type="text" placeholder="First Name" />
+                    <InputField handleChange={handleChange} address={address} 
+                    name='lastName' type="text" placeholder="Last Name" />
+                </div>
+                <InputField handleChange={handleChange} address={address} 
+                name='email' type="text" placeholder="Email address" />
+                <InputField handleChange={handleChange} address={address} 
+                name='street' type="text" placeholder="Street" />
+
+                <div className='grid grid-cols-2 gap-4'>
+                       <InputField handleChange={handleChange} address={address} 
+                       name='city' type="text" placeholder="City" />
+                       <InputField handleChange={handleChange} address={address} 
+                       name='state' type="text" placeholder="State" />
+                </div>
+                <div className='grid grid-cols-2 gap-4'>
+                       <InputField handleChange={handleChange} address={address} 
+                       name='zipcode' type="text" placeholder="Zip code" />
+                       <InputField handleChange={handleChange} address={address} 
+                       name='country' type="text" placeholder="Country" />
+                </div>
+
+                <InputField handleChange={handleChange} address={address} 
+                 name='phone' type="text" placeholder="Phone" />
+
+                 <button className='w-full mt-6 bg-primary text-white py-3
+                 hover:bg-primary-dull transition cursor-pointer uppercase'>
+                         Save Address
+                 </button>
+               </form>
+          </div>
+          <img className='md:mr-16 mb-16 md:mt-0' src={assets.add_address_iamge} alt="Add Address" />
+       </div>
+    </div>
+  )
+}
+
+export default AddAddress
+
+
+
+16. MyOrders
+
+
+import React, { useEffect, useState } from 'react'
+import { useAppContext } from '../context/AppContext'
+import { assets, dummyOrders } from '../assets/assets'
+
+const MyOrders = () => {
+    const [myOrders, setMyOrders] = useState([])
+    const {currency} = useAppContext()
+
+    const fetchMyOrders = async ()=>{
+          setMyOrders(dummyOrders)
+    }
+
+    useEffect(()=>{
+        fetchMyOrders()
+    },[])
+  return (
+    <div className='mt-16 flex flex-col'>
+        <div className='flex flex-col items-end w-max'>
+            <p className='text-2xl font-medium uppercase'>My orders</p>
+            <div className='w-16 h-0.5 bg-primary rounded-full'></div>
+        </div>
+      {myOrders.map((order, index)=>(
+        <div key={index} className='border border-gray-300 rounded-lg mb-10 p-4 py-5 max-w-4xl'>
+            <p className='flex justify-between md:items-center text-gray-400
+            md:font-medium max-md:flex-col'>
+                <span>OrderId : {order._id}</span>
+                <span>Payment : {order.paymentType}</span>
+                <span>Total Amount : {currency}{order.amount}</span>
+            </p>
+            {order.items.map((item, index)=>(
+                <div key={index} className={`relative bg-white text-gray-500/70
+                ${order.items.length !== index + 1 && "border-b"}
+                 border-gray-300 flex flex-col md:flex-row md:items-center justify-between
+                 p-4 py-5 md:gap-16 w-full max-w-4xl`}>
+                    <div className='flex items-center mb-4 md:mb-0'>
+                        <div className='bg-primary/10 p-4 rounded-lg'>
+                            <img src={item.product.image[0]} alt="" className='w-16
+                            h-16' />
+                        </div>
+                        <div className='ml-4'>
+                              <h2 className='text-xl font-medium text-gray-800'>{item.product.name}</h2>
+                              <p>Category: {item.product.category}</p>
+                        </div>
+                    </div>
+                      
+                      <div className='flex flex-col justify-center md:ml-8 mb-4 md:mb-0'>
+                           <p>Quantity: {item.quantity || "1"}</p>
+                           <p>Status: {order.status}</p>
+                           <p>Date: {new Date(order.createdAt).toLocaleDateString()}</p>
+                      </div>
+                      <p className='text-primary text-lg font-medium'>
+                           Amount: {currency}{item.product.offerPrice * item.quantity}
+                      </p>
+
+                </div>
+            ))}
+        </div>
+      ))}
+    </div>
+  )
+}
+
+export default MyOrders
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+17. Navbar
+
+
+import React, { useEffect } from 'react'
+import { NavLink } from 'react-router-dom'
+import { assets } from '../assets/assets'
+import { useAppContext } from '../context/AppContext'
+const Navbar = () => {
+    const [open, setOpen] = React.useState(false)
+    const {user, setUser, setshowUserLogin, navigate, setSearchQuery,
+        getCartCount,getCartAmount,searchQuery} = useAppContext();
+
+    const logout = async ()=>{
+        setUser(null);
+        navigate('/');
+    }
+
+    useEffect(()=>{
+        if(searchQuery.length > 0){
+            navigate("/products")
+        }
+    },[searchQuery])
+
+  return (
+    <nav className="flex items-center justify-between px-6 md:px-16 lg:px-24 xl:px-32 py-4 border-b border-gray-300 bg-white relative transition-all">
+
+            <NavLink to='/' onClick={()=> setOpen(false)}>
+                <img className="h-30" src={assets.logo10} alt="logo6"/>
+            </NavLink>
+
+            {/* Desktop Menu */}
+            <div className="hidden sm:flex items-center gap-8">
+                <NavLink to='/'>Home</NavLink>
+                <NavLink to='/products' onClick={()=>setOpen(false)}>All Product</NavLink>
+                <NavLink to='/' onClick={()=>setOpen(false)}>Contact</NavLink>
+
+                <div className="hidden lg:flex items-center text-sm gap-2 border border-gray-300 px-3 rounded-full">
+                    <input onChange={(e)=>setSearchQuery(e.target.value)} className="py-1.5 w-full bg-transparent outline-none placeholder-gray-500" type="text" placeholder="Search products" />
+                    <img src={assets.search_icon} alt="search" className='w-4 h-4'/>
+                </div>
+
+                <div onClick={()=>navigate("cart")} className="relative cursor-pointer">
+                    <img src={assets.nav_cart_icon} alt="cart" className='w-6 opacity-80'/>
+                    <button className="absolute -top-2 -right-3 text-xs text-white bg-primary w-[18px] h-[18px] rounded-full">{getCartCount()}</button>
+                </div>
+
+            { !user ? ( <button onClick={()=>{setshowUserLogin(true);}} 
+                    className="cursor-pointer px-8 py-2 bg-primary hover:bg-primary-dull transition text-white rounded-full">
+                Login
+            </button> ) : 
+            ( 
+                <div className='relative group'>
+                    <img src={assets.profile_icon} alt="profile" className='w-10'/>
+                    <ul className='hidden group-hover:block absolute top-10 right-0 bg-white shadow border
+                    border-gray-200 py-2.5 w-30 rounded-md text-sm z-40'>
+                        <li onClick={()=>navigate("my-orders")} className='p-1.5 pl-3 hover:bg-primary/10 cursor-pointer'>My Orders</li>
+                        <li onClick={logout} className='p-1.5 pl-3 hover:bg-primary/10 cursor-pointer'>Logout</li>
+                    </ul>
+                </div>
+            )}
+            </div>
+
+            {/* Mobile Search */}
+            <div className="flex lg:hidden items-center text-sm gap-2 border border-gray-300 px-3 rounded-full">
+                <input
+                onChange={(e) => setSearchQuery(e.target.value)}
+                value={searchQuery}
+                className="py-1.5 w-22 sm:w-40 bg-transparent outline-none placeholder-gray-500 text-sm"
+                type="text"
+                placeholder="Search..."
+                />
+                <img src={assets.search_icon} alt="search" className="w-4 h-4" />
+            </div>
+
+            {/* Mobile Cart and Menu icon */}
+            <div className='flex items-center gap-6 sm:hidden'>
+                <div onClick={()=>navigate("cart")} className="relative cursor-pointer">
+                    <img src={assets.nav_cart_icon} alt="cart" className='w-6 opacity-80'/>
+                    <button className="absolute -top-2 -right-3 text-xs text-white bg-primary w-[18px] h-[18px] rounded-full">{getCartCount()}</button>
+                </div>
+                <button onClick={() => open ? setOpen(false) : setOpen(true)} aria-label="Menu">
+                    {/* Menu Icon SVG */}
+                    <img src={assets.menu_icon} alt="menu" />
+                </button>
+            </div>
+
+            {/* Mobile Menu */}
+
+         { open && (
+            <div className={`${open ? 'flex' : 'hidden'} z-50 absolute top-[60px] left-0 w-full bg-white shadow-md py-4 flex-col items-start gap-2 px-5 text-sm md:hidden`}>
+                <NavLink to='/' onClick={()=>setOpen(false)}>Home</NavLink>
+                <NavLink to='/products' onClick={()=>setOpen(false)}>All Product</NavLink>
+                { user && 
+                    <NavLink to='/my-orders' onClick={()=>setOpen(false)}>My Orders</NavLink>
+                }
+                <NavLink to='/' onClick={()=>setOpen(false)}>Contact</NavLink>
+
+                {!user ? (
+                    <button onClick={()=>{
+                        setOpen(false);
+                        setshowUserLogin(true);
+                    }} className="cursor-pointer px-6 py-2 mt-2 bg-primary hover:bg-primary-dull transition text-white rounded-full text-sm">
+                      Login
+                    </button>
+                ):(
+                    <button onClick={logout}
+                    className="cursor-pointer px-6 py-2 mt-2 bg-primary hover:bg-primary-dull transition text-white rounded-full text-sm">
+                      Logout
+                    </button>
+                )}
+                
+            </div>
+          )}
+
+        </nav>
+  )
+}
+
+export default Navbar
+
+
+18.  Login 
+
+
+import React from 'react'
+import { useAppContext } from '../context/AppContext';
+
+const Login = () => {
+
+    const [state, setState] = React.useState("login");
+    const [name, setName] = React.useState("");
+    const [email, setEmail] = React.useState("");
+    const [password, setPassword] = React.useState("");
+    const {setshowUserLogin, setUser} = useAppContext();
+
+    const onSubmitHandler = async(event)=>{
+        event.preventDefault();
+        setUser({
+            email:'test@roypiku.com',
+            name:'Piku Roy'
+        })
+        setshowUserLogin(false)
+    }
+
+  return (
+    <div onClick={()=>setshowUserLogin(false)} className='fixed top-0 bottom-0 left-0 right-0 z-30 flex items-center
+     text-sm text-gray-600 bg-black/50'>
+        <form onSubmit={onSubmitHandler} onClick={(e)=>e.stopPropagation()} className="flex flex-col gap-4 m-auto items-start p-8 py-12 w-80 sm:w-[352px] rounded-lg shadow-xl border border-gray-200 bg-white">
+            <p className="text-2xl font-medium m-auto">
+                <span className="text-primary">User</span> {state === "login" ? "Login" : "Sign Up"}
+            </p>
+            {state === "register" && (
+                <div className="w-full">
+                    <p>Name</p>
+                    <input onChange={(e) => setName(e.target.value)} value={name} placeholder="type here" className="border border-gray-200 rounded w-full p-2 mt-1 outline-primary" type="text" required />
+                </div>
+            )}
+            <div className="w-full ">
+                <p>Email</p>
+                <input onChange={(e) => setEmail(e.target.value)} value={email} placeholder="type here" className="border border-gray-200 rounded w-full p-2 mt-1 outline-primary" type="email" required />
+            </div>
+            <div className="w-full ">
+                <p>Password</p>
+                <input onChange={(e) => setPassword(e.target.value)} value={password} placeholder="type here" className="border border-gray-200 rounded w-full p-2 mt-1 outline-primary" type="password" required />
+            </div>
+            {state === "register" ? (
+                <p>
+                    Already have account? <span onClick={() => setState("login")} className="text-primary cursor-pointer">click here</span>
+                </p>
+            ) : (
+                <p>
+                    Create an account? <span onClick={() => setState("register")} className="text-primary cursor-pointer">click here</span>
+                </p>
+            )}
+            <button className="bg-primary hover:bg-primary-dull transition-all text-white w-full py-2 rounded-md cursor-pointer">
+                {state === "register" ? "Create Account" : "Login"}
+            </button>
+        </form>
+    </div>
+  )
+}
+
+export default Login
+
+
+
+19. Footer
+
+
+import React from "react";
+import { NavLink } from "react-router-dom";
+import { assets, footerLinks } from "../assets/assets";
+
+
+const Footer = () => {
+
+    return (
+        <div className="px-6 md:px-16 lg:px-24 xl:px-32 mt-34 bg-primary/10">
+            <div className="flex flex-col md:flex-row items-start justify-between gap-10 py-10 border-b border-gray-500/30 text-gray-500">
+                <div>
+                    <NavLink to="/" onClick={() => window.scrollTo(0, 0)}>
+                        <img className="w-34 md:w-32 cursor-pointer" src={assets.logo10} alt="Logo"/>
+                    </NavLink>
+                    <p className="max-w-[410px] mt-6">We deliver fresh groceries and snacks straight to your door. Trusted by thousands, we aim to make your shopping experience simple and affordable.</p>
+                </div>
+                <div className="flex flex-wrap justify-between w-full md:w-[45%] gap-5">
+                    {footerLinks.map((section, index) => (
+                        <div key={index}>
+                            <h3 className="font-semibold text-base text-gray-900 md:mb-5 mb-2">{section.title}</h3>
+                            <ul className="text-sm space-y-1">
+                                {section.links.map((link, i) => (
+                                    <li key={i}>
+                                        <a href={link.url} className="hover:underline transition">{link.text}</a>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    ))}
+                </div>
+            </div>
+            <p className="py-4 text-center text-sm md:text-base text-gray-500/80">
+                Copyright {new Date().getFullYear()} © FreshCart—Delivering Freshness to Your Doorstep. All rights reserved.
+            </p>
+        </div>
+    );
+};
+
+export default Footer;
+
+
+
+20. AppContext
+
+
+import { createContext, useContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { dummyProducts } from "../assets/assets";
+import toast from "react-hot-toast";
+
+
+export const AppContext = createContext();
+
+export const AppContextProvider = ({children}) => {
+   
+    const currency = import.meta.env.VITE_CURRENCY;
+
+    const navigate = useNavigate();
+    const [user,setUser] = useState(null)
+    const [isSeller,setisSeller] = useState(false)
+    const [showUserLogin,setshowUserLogin] = useState(false)
+    const [products, setProducts] = useState([])
+    const [cartItems, setCartItems] = useState({})
+    const [searchQuery, setSearchQuery] = useState([])
+
+    //Add Products to Cart
+    const addToCart = (itemId)=>{
+        let cartData = structuredClone(cartItems);
+
+        if(cartData[itemId]){
+            cartData[itemId] += 1;
+        }else{
+            cartData[itemId] = 1;
+        }
+        setCartItems(cartData);
+        toast.success("Added to Cart")
+    }
+
+    //Update Cart Item Quantity
+    const updateCartItem = (itemId,quantity)=>{
+        let cartData = structuredClone(cartItems);
+
+        cartData[itemId] = quantity;
+        setCartItems(cartData)
+        toast.success("Cart Updated")
+    }
+
+    //Remove from cart
+    const removeFromCart = (itemId)=>{
+        let cartData = structuredClone(cartItems);
+        if(cartData[itemId]){
+            cartData[itemId] -= 1;
+            if(cartData[itemId] === 0){
+                delete cartData[itemId];
+            }
+        }
+        toast.success("Removed from Cart")
+        setCartItems(cartData)
+    }
+
+    // Get Cart Item Count
+    const getCartCount = ()=>{
+        let totalCount = 0;
+        for(const item in cartItems){
+            totalCount += cartItems[item];
+        }
+        return totalCount;
+    }
+
+    // Get Cart Total Amount
+    const getCartAmount = ()=>{
+        let totalAmount = 0;
+        for(const items in cartItems){
+            let itemInfo = products.find((product)=>product._id === items);
+            if(cartItems[items] > 0){
+                totalAmount += itemInfo.offerPrice * cartItems[items];
+            }
+        }
+        return Math.floor(totalAmount * 100) / 100;
+    }
+    //Fetch All Products 
+    const fetchProducts = async()=>{
+        setProducts(dummyProducts)
+    }
+    
+    useEffect(()=>{
+        fetchProducts()
+    },[])
+    const value = {navigate, user, setUser, isSeller, setisSeller, showUserLogin,setshowUserLogin, products, currency,
+        addToCart, updateCartItem, removeFromCart, cartItems, searchQuery, setSearchQuery, getCartAmount, getCartCount
+    }
+    return <AppContext.Provider value={value}>
+        {children}
+    </AppContext.Provider>
+}
+
+export const useAppContext = ()=>{
+    return useContext(AppContext)
+}
+
+
