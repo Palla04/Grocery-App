@@ -25,7 +25,7 @@ const Navbar = () => {
     },[searchQuery])
 
   return (
-    <nav className="flex items-center justify-between px-6 md:px-16 lg:px-24 xl:px-32 py-4 border-b border-gray-300 bg-white relative transition-all">
+     <nav className="flex items-center justify-between md:px-16 lg:px-24 xl:px-32 py-4 border-b border-gray-300 bg-white relative transition-all"> {/* px-6 */}
 
             <NavLink to='/' onClick={()=> setOpen(false)}>
                 <img className="h-16" src={assets.logo2} alt="logo1"/>
@@ -66,7 +66,7 @@ const Navbar = () => {
             </div>
 
             {/* Mobile Search */}
-            <div className="flex lg:hidden items-center text-sm gap-2 border border-gray-300 px-3 rounded-full">
+            <div className="flex pr-4 lg:hidden items-center text-sm gap-2 border border-gray-300 px-3 rounded-full">
                 <input
                 onChange={(e) => setSearchQuery(e.target.value)}
                 value={searchQuery}
@@ -74,15 +74,15 @@ const Navbar = () => {
                 type="text"
                 placeholder="Search..."
                 />
-                <img src={assets.search_icon} alt="search" className="w-4 h-4" />
+                <img src={assets.search_icon} alt="search" className="w-4 h-4 pr-2" />
             </div>
 
             {/* Mobile Cart and Menu icon */}
-            <div className='flex items-center gap-6 sm:hidden'>
-                <div onClick={()=>navigate("cart")} className="relative cursor-pointer">
+            <div className='sm:hidden pl-4 pr-1'>   {/*flex items-center */}
+                {/* <div onClick={()=>navigate("cart")} className="relative cursor-pointer">
                     <img src={assets.nav_cart_icon} alt="cart" className='w-6 opacity-80'/>
                     <button className="absolute -top-2 -right-3 text-xs text-white bg-primary w-[18px] h-[18px] rounded-full">{getCartCount()}</button>
-                </div>
+                </div> */}
                 <button onClick={() => open ? setOpen(false) : setOpen(true)} aria-label="Menu">
                     {/* Menu Icon SVG */}
                     <img src={assets.menu_icon} alt="menu" />
@@ -95,6 +95,7 @@ const Navbar = () => {
             <div className={`${open ? 'flex' : 'hidden'} z-50 absolute top-[60px] left-0 w-full bg-white shadow-md py-4 flex-col items-start gap-2 px-5 text-sm md:hidden`}>
                 <NavLink to='/' onClick={()=>setOpen(false)}>Home</NavLink>
                 <NavLink to='/products' onClick={()=>setOpen(false)}>All Product</NavLink>
+                <NavLink to='/cart' onClick={()=>setOpen(false)}>My Cart</NavLink>
                 { user && 
                     <NavLink to='/my-orders' onClick={()=>setOpen(false)}>My Orders</NavLink>
                 }
