@@ -10,7 +10,7 @@ const Footer = () => {
             <div className="flex flex-col md:flex-row items-start justify-between gap-10 py-10 border-b border-gray-500/30 text-gray-500">
                 <div>
                     <NavLink to="/" onClick={() => window.scrollTo(0, 0)}>
-                        <img className="h-10 w-34 md:w-32 cursor-pointer" src={assets.logo2} alt="Logo"/>
+                        <img className="h-10 w-34 md:w-32 cursor-pointer" src={assets.logo_fresh} alt="Logo"/>
                     </NavLink>
                     <p className="max-w-[410px] mt-6">We deliver fresh groceries and snacks straight to your door. Trusted by thousands, we aim to make your shopping experience simple and affordable.</p>
                 </div>

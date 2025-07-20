@@ -10,3 +10,7 @@
     --color-primary: #4fbf8b;
     --color-primary-dull: #44ae7c;
 }
+
+body {
+  background-color: rgba(79, 191, 139, 0.1);
+}
