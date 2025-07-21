@@ -28,7 +28,7 @@ const Navbar = () => {
      <nav className="flex items-center justify-between md:px-16 lg:px-24 xl:px-32 py-4 border-b border-gray-300 relative transition-all"> {/* px-6 */}
 
             <NavLink to='/' onClick={()=> setOpen(false)}>
-                <img className="h-16" src={assets.logo_fresh} alt="logo1"/>
+                <img className="h-16" src={assets.logo1} alt="logo1"/>
             </NavLink>
 
             {/* Desktop Menu */}

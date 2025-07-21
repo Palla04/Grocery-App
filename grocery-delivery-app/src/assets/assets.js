@@ -1,4 +1,4 @@
-import logo_fresh from "./logo_fresh.svg";
+import logo1 from "./logo1.svg";
 import m_b_1 from "./m_b_1.jpg";
 import m_b_small from "./m_b_small.jpg"
 import search_icon from "./search_icon.svg";
@@ -73,7 +73,7 @@ import brown_rice_image from "./brown_rice_image.png";
 import barley_image from "./barley_image.png";
 
 export const assets = {
-  logo_fresh,
+  logo1,
   m_b_1,
   m_b_small,
   search_icon,
