@@ -1,10 +1,6 @@
-import logo2 from "./logo2.svg";
 import logo_fresh from "./logo_fresh.svg";
-import m1 from "./m1.webp";
-import m_1 from "./m_1.png";
-import m_2 from "./m_2.png";
 import m_b_1 from "./m_b_1.jpg";
-import main_banner_big from "./main_banner_big.jpg";
+import m_b_small from "./m_b_small.jpg"
 import search_icon from "./search_icon.svg";
 import remove_icon from "./remove_icon.svg";
 import arrow_right_icon_colored from "./arrow_right_icon_colored.svg";
@@ -77,13 +73,9 @@ import brown_rice_image from "./brown_rice_image.png";
 import barley_image from "./barley_image.png";
 
 export const assets = {
-  logo2,
   logo_fresh,
-  m1,
-  m_1,
-  m_2,
   m_b_1,
-  main_banner_big,
+  m_b_small,
   search_icon,
   remove_icon,
   arrow_right_icon_colored,
