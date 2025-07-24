@@ -14,7 +14,7 @@ const MyOrders = () => {
         fetchMyOrders()
     },[])
   return (
-    <div className='mt-16 flex flex-col'>
+    <div className='mt-16 flex flex-col px-2'>
         <div className='flex flex-col items-end w-max'>
             <p className='text-2xl font-medium uppercase'>My orders</p>
             <div className='w-16 h-0.5 bg-primary rounded-full'></div>
