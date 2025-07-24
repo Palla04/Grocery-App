@@ -25,7 +25,7 @@ const Navbar = () => {
     },[searchQuery])
 
   return (
-     <nav className="flex items-center justify-between md:px-16 lg:px-24 xl:px-32 py-4 border-b border-gray-300 relative transition-all"> {/* px-6 */}
+     <nav className="flex items-center justify-between md:px-16 lg:px-24 xl:px-32 py-4 border-b border-gray-300 relative transition-all bg-primary/10"> {/* px-6 */}
 
             <NavLink to='/' onClick={()=> setOpen(false)}>
                 <img className="h-16" src={assets.logo1} alt="logo1"/>
@@ -35,7 +35,7 @@ const Navbar = () => {
             <div className="hidden sm:flex items-center gap-8">
                 <NavLink to='/'>Home</NavLink>
                 <NavLink to='/products' onClick={()=>setOpen(false)}>All Product</NavLink>
-                <NavLink to='/' onClick={()=>setOpen(false)}>Contact</NavLink>
+                <NavLink to='/contact' onClick={()=>setOpen(false)}>Contact</NavLink>
 
                 <div className="hidden lg:flex items-center text-sm gap-2 border border-gray-300 px-3 rounded-full">
                     <input onChange={(e)=>setSearchQuery(e.target.value)} className="py-1.5 w-full bg-transparent outline-none placeholder-gray-500" type="text" placeholder="Search products" />
@@ -99,7 +99,7 @@ const Navbar = () => {
                 { user && 
                     <NavLink to='/my-orders' onClick={()=>setOpen(false)}>My Orders</NavLink>
                 }
-                <NavLink to='/' onClick={()=>setOpen(false)}>Contact</NavLink>
+                <NavLink to='/contact' onClick={()=>setOpen(false)}>Contact</NavLink>
 
                 {user ? (
                     <UserButton></UserButton>
