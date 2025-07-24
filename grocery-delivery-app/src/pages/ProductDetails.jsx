@@ -26,7 +26,7 @@ const ProductDetails = () => {
         setThumbnail(product?.image[0] ? product.image[0] : null)
     },[product])
     return product && (
-        <div className="mt-12">
+        <div className="mt-12 px-2 sm:px-4">
             <p>
                 <Link to={'/'}>Home</Link> /
                 <Link to={'/products'}> Products</Link> /
